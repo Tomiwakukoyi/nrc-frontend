@@ -1,3 +1,5 @@
+// src/services/api.js
+
 import axios from "axios";
 
 const api = axios.create({
@@ -15,15 +17,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("API Error:", error);
-    if (error.response) {
-      console.error("Response data:", error.response.data);
-      console.error("Response status:", error.response.status);
-    } else if (error.request) {
-      console.error("No response received:", error.request);
-    } else {
-      console.error("Error setting up request:", error.message);
-    }
+    console.error("API Error:", error.response?.data || error.message);
     throw error;
   }
 );
@@ -33,6 +27,12 @@ export const login = (email, password) =>
 export const register = (email, password, name) =>
   api.post("/auth/register", { email, password, name });
 export const getTickets = () => api.get("/tickets");
-export const createTicket = (ticketData) => api.post("/tickets", ticketData);
+export const createTicket = (ticketData) =>
+  api.post("/tickets", {
+    from: ticketData.from,
+    to: ticketData.to,
+    departureTime: new Date(ticketData.departureTime), // Ensure proper date format
+    price: ticketData.price,
+  });
 
 export default api;

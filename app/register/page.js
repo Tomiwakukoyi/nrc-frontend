@@ -15,11 +15,12 @@ export default function Register() {
     e.preventDefault();
     setError("");
     try {
+      console.log("Sending registration data:", { name, email, password });
       const response = await register(email, password, name);
-      console.log("Registration successful:", response);
+      console.log("Registration response:", response);
       router.push("/login");
     } catch (error) {
-      console.error("Registration failed:", error);
+      console.error("Registration error:", error);
       if (error.response) {
         setError(
           `Registration failed: ${
